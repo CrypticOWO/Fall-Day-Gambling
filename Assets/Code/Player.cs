@@ -1,52 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Rigidbody PC;
-    public int speed = 5;
+    public float speed = 5f;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        speed = 5;
-    }
+    public static bool InMenu = false;
 
-    // Update is called once per frame
+
     void Update()
     {
-        Vector3 vel = new Vector3(0,0,0);
-        
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            speed = 10;
-        }
-        else
-        {
-            speed = 5;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            vel.x = speed;  
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            vel.x = -speed;  
-        }
-        if (Input.GetKey(KeyCode.W))
-        {
-            vel.z = speed;  
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            vel.z = -speed;  
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            vel.y = speed+100;  
-        }
+        // Get input from the player
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
 
-        PC.velocity = vel;
+        // Create a movement vector
+        Vector3 direction = new Vector3(horizontalInput, 0, verticalInput).normalized;
+
+        // Move relative to the player's forward direction
+        if (direction.magnitude >= 0.1f)
+        {
+            // Get the player's forward direction
+            Vector3 forward = Camera.main.transform.TransformDirection(Vector3.forward);
+            forward.y = 0; // Ignore the y component
+
+            // Calculate the right direction
+            Vector3 right = Camera.main.transform.TransformDirection(Vector3.right);
+
+            // Create the final movement vector
+            Vector3 moveDirection = (forward * direction.z + right * direction.x).normalized;
+
+            // Move the player
+            transform.position += moveDirection * speed * Time.deltaTime;
+        }
     }
 }
