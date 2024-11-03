@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Card : MonoBehaviour
+public class DealerCard : MonoBehaviour
 {
     public int myValue;
     private Texture selectedTexture;
@@ -30,13 +30,14 @@ public class Card : MonoBehaviour
             myValue = GetValueFromTextureName(selectedTexture.name);
             //Debug.Log($"Selected texture: {selectedTexture.name}, Card value set to: {myValue}");
 
-            //Update PlayerHandValue
-            DeckAndMath.PlayerHandValue += myValue;
-            //Debug.Log($"Current Player Hand Value = {DeckAndMath.PlayerHandValue}");
+            //Update DealerHandValue
+            DeckAndMath.SecretDealerHandValue += myValue;
+            DeckAndMath.DealerHandValue += myValue;
+            //Debug.Log($"Current Dealer Hand Value = {DeckAndMath.DealerHandValue}");
 
             if (myValue == 11)
             {
-                DealerCode.PlayerAces.Add(this);
+                DealerCode.DealerAces.Add(this);
             }
         }
         else

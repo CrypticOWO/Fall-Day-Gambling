@@ -97,7 +97,7 @@ public class CameraCode : MonoBehaviour
         {
             if (hit.collider.gameObject.name == "Table")
             {
-                Debug.Log("Time to PLAY");
+                //Debug.Log("Time to PLAY");
                 LookingAt = "Table";
             }
         }
