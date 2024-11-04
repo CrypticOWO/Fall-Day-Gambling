@@ -37,18 +37,16 @@ public class ConfirmBet : MonoBehaviour
                 DealerCode.PlayerAces.Clear(); // Clear Player Aces
                 DealerCode.DealerAces.Clear(); // Clear Dealer Aces
                 
-                DealerCode.DealerTurn = "Start";
-                DealerCode.Gameover = "NA";
-                DealerCode.ButtonsDisabled = "No";
-
+                DealerCode.ScoreUpdate = "Yes";
                 DeckAndMath.DealerHandValue = 0;
                 DeckAndMath.SecretDealerHandValue = 0;
                 DeckAndMath.PlayerHandValue = 0;
 
-                DeckAndMath.Amount = 0;
+                DealerCode.DealerTurn = "Start";
+                DealerCode.Gameover = "NA";
+                DealerCode.ButtonsDisabled = "No";
 
-                HitButton.interactable = true;
-                StandButton.interactable = true;
+                DeckAndMath.Amount = 0;
             }
         }
         else if (InputBet.Bet > Player.Balance)

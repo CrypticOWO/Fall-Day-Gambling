@@ -13,9 +13,9 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(CameraCode.LockView == "No")
+        if(CameraCode.LockView == "No" && CameraCode.InCutscene == "No")
         {
-            transform.position = TargetCamera.transform.position + new Vector3(0,-3.5f, 0);
+            transform.position = TargetCamera.transform.position + new Vector3(0,-3f, 0);
         }
     }
 }

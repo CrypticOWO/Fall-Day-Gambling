@@ -11,6 +11,9 @@ public class PlayerValue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerScore.text = "Player Value: " + DeckAndMath.PlayerHandValue;
+        if (DealerCode.ScoreUpdate == "Yes")
+        {
+            PlayerScore.text = "Player Value: " + DeckAndMath.PlayerHandValue;
+        }
     }
 }

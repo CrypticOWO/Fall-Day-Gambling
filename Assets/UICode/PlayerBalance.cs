@@ -7,18 +7,24 @@ using TMPro;
 public class PlayerBalance : MonoBehaviour
 {
     public TMP_Text Balance;
+    private RectTransform rectTransform;
+
+    void Start()
+    {
+        rectTransform = GetComponent<RectTransform>();
+    }
 
     // Update is called once per frame
     void Update()
     {
         Balance.text = "Wallet: " + Player.Balance;
-        if(CameraCode.LockView == "Yes")
+        if(CameraCode.LockView == "Yes" && CameraCode.LookingAt == "Table")
         {
-            transform.position = new Vector3(820,410,0);
+            rectTransform.anchoredPosition = new Vector2(410,430);
         }
         else
         {
-            transform.position = new Vector3(820,440,0);
+            rectTransform.anchoredPosition = new Vector2(440,500);
         }
     }
 }

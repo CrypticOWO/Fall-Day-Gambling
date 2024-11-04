@@ -12,15 +12,24 @@ public class DealerValue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (DealerCode.ButtonsDisabled == "No")
+        if (DealerCode.ButtonsDisabled == "No" && DealerCode.ScoreUpdate == "Yes")
         {
-            SecondDealerCard = DealerCode.DealerHand[1];
-            DealerCard cardScript = SecondDealerCard.GetComponent<DealerCard>();
-            DealerScore.text = "Dealer Value: " + cardScript.myValue + "+";
+            // Update the dealer score only if there's enough cards
+            if (DealerCode.DealerHand.Count > 1)
+            {
+                SecondDealerCard = DealerCode.DealerHand[1];
+                DealerCard cardScript = SecondDealerCard.GetComponentInChildren<DealerCard>();
+                DealerScore.text = "Dealer Value: " + cardScript.myValue + "+";
+            }
+            else
+            {
+                DealerScore.text = "Dealer Value: Pending";
+                DealerCode.ScoreUpdate = "No";
+            }
         }
-        else
+        if (DealerCode.ButtonsDisabled == "Yes" && DealerCode.Gameover == "Yes" && DealerCode.ScoreUpdate == "Yes")
         {
-            DealerScore.text = "Dealer Value: " + DeckAndMath.DealerHandValue;            
+            DealerScore.text = "Dealer Value: " + DeckAndMath.DealerHandValue;
         }
     }
 }

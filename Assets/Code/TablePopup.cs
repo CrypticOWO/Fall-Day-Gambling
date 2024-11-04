@@ -15,7 +15,7 @@ public class TablePopup : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (CameraCode.LookingAt == "Table" && CameraCode.LockView == "No")
+        if (CameraCode.LookingAt == "Table" && CameraCode.LockView == "No" && CameraCode.InCutscene == "No")
         {
             Popup.gameObject.SetActive(true); 
         }

@@ -5,15 +5,11 @@ using UnityEngine.UI;
 
 public class DealerCode : MonoBehaviour
 {
-    public GameObject CardPrefab;
+    public GameObject PlayerCardPrefab;
     public GameObject DealerCardPrefab;
-    public GameObject CardBackPrefab;
-    
+
     public Vector3 lastPlayerCardPosition;
     public Vector3 lastDealerCardPosition;
-
-    public Vector3 CardBackPosition;
-    public GameObject CardBack;
 
     public static string DealerTurn = "Start";
     public static string ButtonsDisabled = "No";
@@ -32,15 +28,23 @@ public class DealerCode : MonoBehaviour
 
     public static string Gameover = "NA";
 
+    public static Vector3 DeckPosition = new Vector3(0, 0, 0); // Set the deck/starting position
+    public static Vector3 DealerTargetPosition = new Vector3(0, 0, 0); // Set the dealer target position
+    public static Vector3 PlayerTargetPosition = new Vector3(0, 0, 0); // Set the player target position
+
+    private Quaternion TargetRotation = Quaternion.Euler(0, 0, 0); // Set the target rotation for face up
+
+    public static string ScoreUpdate = "No";
+
     void Start()
     {
         PlayerNatural = "Nope";
         DealerNatural = "Nope";
         DealerTurn = "Start";
         Gameover = "NA";
+        ScoreUpdate = "No";
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (CameraCode.LookingAt == "Table" && CameraCode.LockView == "Yes" && DealerTurn == "Start" && ConfirmBet.BetConfirmed == "Yes")
@@ -49,107 +53,134 @@ public class DealerCode : MonoBehaviour
             DealerTurn = "Standby";
             Gameover = "No";
         }
-        if (Gameover == "No")
+        
+        if (DealerTurn == "Active" && ButtonsDisabled == "Yes" && Gameover == "No")
         {
-            if (DealerTurn == "Active" && ButtonsDisabled == "Yes")
-            {
-                Destroy(CardBack);
+            StartCoroutine(RevealFaceDown());
 
-                if (DeckAndMath.PlayerHandValue == 21 && DeckAndMath.PlayerDrawnCards == 2)
-                {
-                    Gameover = "Yes";
-                    ConfirmBet.BetConfirmed = "No";
-                    DealerTurn = "Standby";
-                    PlayerNatural = "YEAH";
-                }
-                else if (DeckAndMath.PlayerHandValue > 21 || DeckAndMath.DealerHandValue >= 17 || DeckAndMath.PlayerHandValue <= DeckAndMath.DealerHandValue)
-                {
-                    Gameover = "Yes";
-                    ConfirmBet.BetConfirmed = "No";
-                    DealerTurn = "Standby";
-                }
-                else if ((DeckAndMath.DealerHandValue < DeckAndMath.PlayerHandValue) && DeckAndMath.DealerHandValue < 17)
-                {
-                    DrawDealerCard();
-                }
-                
-            }
-            else if (DealerTurn == "Standby" && (DeckAndMath.PlayerHandValue >= 21 || DeckAndMath.DealerHandValue == 21))
+            if (DeckAndMath.PlayerHandValue == 21 && DeckAndMath.PlayerDrawnCards == 2)
             {
-                HitButton.interactable = false;
-                StandButton.interactable = false;
-                DealerCode.DealerTurn = "Active";
-                DealerCode.ButtonsDisabled = "Yes";
-                if (DeckAndMath.DealerHandValue == 21 && DeckAndMath.DealerDrawnCards == 2)
-                {
-                    DealerNatural = "YEAH";
-                }
+                Gameover = "Yes";
+                ConfirmBet.BetConfirmed = "No";
+                DealerTurn = "Standby";
+                PlayerNatural = "YEAH";
+            }
+            else if (DeckAndMath.PlayerHandValue > 21 || DeckAndMath.DealerHandValue >= 17 || DeckAndMath.PlayerHandValue <= DeckAndMath.DealerHandValue)
+            {
+                Gameover = "Yes";
+                ConfirmBet.BetConfirmed = "No";
+                DealerTurn = "Standby";
+            }
+            else if (DeckAndMath.DealerHandValue < 17)
+            {
+                StartCoroutine(DrawDealerCard());
+            }
+        }
+        else if (DealerTurn == "Standby" && (DeckAndMath.PlayerHandValue >= 21 || DeckAndMath.DealerHandValue == 21))
+        {
+            HitButton.interactable = false;
+            StandButton.interactable = false;
+            DealerTurn = "Active";
+            ButtonsDisabled = "Yes";
+            if (DeckAndMath.DealerHandValue == 21 && DeckAndMath.DealerDrawnCards == 2)
+            {
+                DealerNatural = "YEAH";
             }
         }
     }
 
     public void SetUpGame()
     {
-        Vector3 position;
+        DeckPosition = new Vector3(10f, 3f, 76.5f);
+        DealerTargetPosition = new Vector3(8.5f, 2.9f, 76f);
+        PlayerTargetPosition = new Vector3(8f, 2.9f, 73.75f);
+        TargetRotation = Quaternion.Euler(180, 90, 90);
+
         DeckAndMath.PlayerDrawnCards = 0;
         DeckAndMath.DealerDrawnCards = 0;
 
-        // Instantiate FIRST Face Up Player Card
-        position = new Vector3(0, 2.8f, 19);
-        GameObject newCard = Instantiate(CardPrefab, position, Quaternion.identity);
-        PlayerHand.Add(newCard);
-        newCard.transform.localEulerAngles = new Vector3(0, 90, 90); // Set rotation
-        ++DeckAndMath.PlayerDrawnCards;
+        HitButton.interactable = false;
+        StandButton.interactable = false;
 
-        // Instantiate FIRST Face Down Dealer Card Part 1
-        CardBackPosition = new Vector3(0.6f, 2.801f, 21.5f);
-        CardBack = Instantiate(CardBackPrefab, CardBackPosition, Quaternion.identity);
-        CardBack.transform.localEulerAngles = new Vector3(0, 90, 90); // Set rotation
-
-        // Instantiate FIRST Face Down Dealer Card Part 2
-        position = new Vector3(0.6f, 2.8f, 21.5f);
-        GameObject newCard2 = Instantiate(DealerCardPrefab, position, Quaternion.identity);
-        DealerHand.Add(newCard2);
-        newCard2.transform.localEulerAngles = new Vector3(0, 90, 90); // Set rotation
-        ++DeckAndMath.DealerDrawnCards;
-
-        // Instantiate SECOND Face Up Player Card
-        position = new Vector3(0.25f, 2.801f, 19.25f);
-        GameObject newCard3 = Instantiate(CardPrefab, position, Quaternion.identity);
-        PlayerHand.Add(newCard3);
-        newCard3.transform.localEulerAngles = new Vector3(0, 90, 90); // Set rotation
-        ++DeckAndMath.PlayerDrawnCards;
-
-        // Instantiate SECOND Face Up Dealer Card
-        position = new Vector3(-0.05f, 2.802f, 21.5f);
-        GameObject newCard4 = Instantiate(DealerCardPrefab, position, Quaternion.identity);
-        DealerHand.Add(newCard4);
-        newCard4.transform.localEulerAngles = new Vector3(0, 90, 90); // Set rotation
-        ++DeckAndMath.DealerDrawnCards;
+        // Start the card drawing sequence as a coroutine
+        StartCoroutine(CardDrawingSequence());
     }
 
-    public void DrawDealerCard()
+    public IEnumerator DrawDealerCard()
     {
-        Vector3 position;
-
-        if (DeckAndMath.DealerDrawnCards == 2)
-        {
-            // Use the specified starting position for the first card
-            position = new Vector3(-0.70f, 2.803f, 21.5f);
-        }
-        else
-        {
-            // Offset the position based on the last card's position
-            position = lastDealerCardPosition + new Vector3(-0.65f, 0.001f, 0);
-        }
-
-        // Instantiate the new card
-        GameObject newCard = Instantiate(DealerCardPrefab, position, Quaternion.identity);
-        newCard.transform.localEulerAngles = new Vector3(0, 90, 90); // Set rotation
-        DealerCode.DealerHand.Add(newCard);
-
-        // Update the lastPlayerCardPosition to the position of the newly created card
-        lastDealerCardPosition = position;
+        // Instantiate the new card at the starting position (face down)
+        DealerCode.ScoreUpdate = "No";
+        GameObject newCard = Instantiate(DealerCardPrefab, DeckPosition, Quaternion.Euler(0, 90, 90));
+        DealerHand.Add(newCard);
         ++DeckAndMath.DealerDrawnCards;
+
+        // Start the movement and flipping coroutine
+        yield return StartCoroutine(MoveAndFlipCard(newCard, DealerTargetPosition + new Vector3((DeckAndMath.DealerDrawnCards - 1) * (-0.65f), 0, 0), TargetRotation, 0.35f)); // 1f is the duration for the movement and flip
+        ScoreUpdate = "Yes";
+    }
+    
+    public IEnumerator DrawPlayerCard()
+    {
+        // Instantiate the new card at a fixed starting position (face down)
+        DealerCode.ScoreUpdate = "No";
+        GameObject newCard = Instantiate(PlayerCardPrefab, DeckPosition, Quaternion.Euler(0, 90, 90));
+        DealerCode.PlayerHand.Add(newCard);
+        ++DeckAndMath.PlayerDrawnCards;
+
+        // Start the movement and flipping coroutine
+        yield return StartCoroutine(MoveAndFlipCard(newCard, PlayerTargetPosition + new Vector3((DeckAndMath.PlayerDrawnCards - 1) * (0.25f), (DeckAndMath.PlayerDrawnCards) * (0.002f), (DeckAndMath.PlayerDrawnCards) * (0.25f)), TargetRotation, 0.35f)); // 1f is the duration for the movement and flip
+        ScoreUpdate = "Yes";
+    }
+
+    public IEnumerator RevealFaceDown()
+    {
+        DealerCode.ScoreUpdate = "No";
+        GameObject CardToFlip = DealerHand[0];
+        yield return StartCoroutine(MoveAndFlipCard(CardToFlip, new Vector3(8.5f, 2.9f, 76f), Quaternion.Euler(180, 90, 90), 0.70f));
+        ScoreUpdate = "Yes";
+    }
+
+    private IEnumerator MoveAndFlipCard(GameObject card, Vector3 endPosition, Quaternion endRotation, float duration)
+    {
+        Vector3 startPosition = card.transform.position;
+        Quaternion startRotation = card.transform.rotation;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            // Interpolate position
+            card.transform.position = Vector3.Lerp(startPosition, endPosition, time / duration);
+            
+            // Interpolate rotation (flip the card)
+            card.transform.rotation = Quaternion.Lerp(startRotation, endRotation, time / duration);
+
+            yield return null; // Wait for the next frame
+        }
+    }
+
+    private IEnumerator CardDrawingSequence()
+    {
+        // Instantiate FIRST Face Up Player Card
+        yield return DrawPlayerCard();
+        yield return new WaitForSeconds(0.35f); // Wait for the card to finish animating
+
+        // Instantiate FIRST Face Down Dealer Card
+        TargetRotation = Quaternion.Euler(0, 90, 90);
+        yield return DrawDealerCard();
+        yield return new WaitForSeconds(0.35f); // Wait for the card to finish animating
+
+        // Instantiate SECOND Face Up Player Card
+        TargetRotation = Quaternion.Euler(180, 90, 90);
+        yield return DrawPlayerCard();
+        yield return new WaitForSeconds(0.35f); // Wait for the card to finish animating
+
+        // Instantiate SECOND Face Up Dealer Card
+        yield return DrawDealerCard();
+        yield return new WaitForSeconds(0.35f); // Wait for the card to finish animating
+
+        HitButton.interactable = true;
+        StandButton.interactable = true;
     }
 }

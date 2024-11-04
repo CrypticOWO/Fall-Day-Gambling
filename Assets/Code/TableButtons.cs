@@ -12,6 +12,9 @@ public class TableButtons : MonoBehaviour
 
     public GameObject InputAndConfirmBet;
     public GameObject BetAndPayout;
+    public GameObject LeaveTable;
+
+    public GameObject Wallet;
 
     // Start is called before the first frame update
     void Start()
@@ -22,14 +25,24 @@ public class TableButtons : MonoBehaviour
         DealerValue.gameObject.SetActive(false);
         InputAndConfirmBet.gameObject.SetActive(false);
         BetAndPayout.gameObject.SetActive(false);
+        LeaveTable.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (CameraCode.TypeOfMenu == "Start" && Player.Balance == 10000)
+        {
+            Wallet.gameObject.SetActive(false);
+        }
+        else if (CameraCode.TypeOfMenu == "Casino")
+        {
+            Wallet.gameObject.SetActive(true);
+        }
         if (CameraCode.LookingAt == "Table" && CameraCode.LockView == "Yes")
         {
             BetAndPayout.gameObject.SetActive(true);
+            LeaveTable.gameObject.SetActive(true);
 
             if (ConfirmBet.BetConfirmed == "Yes")
             {
@@ -53,6 +66,7 @@ public class TableButtons : MonoBehaviour
             DealerValue.gameObject.SetActive(false);
             InputAndConfirmBet.gameObject.SetActive(false);
             BetAndPayout.gameObject.SetActive(false);
+            LeaveTable.gameObject.SetActive(false);
         }
     }
 }
