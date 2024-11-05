@@ -91,9 +91,9 @@ public class DealerCode : MonoBehaviour
 
     public void SetUpGame()
     {
-        DeckPosition = new Vector3(10f, 3f, 76.5f);
-        DealerTargetPosition = new Vector3(8.5f, 2.9f, 76f);
-        PlayerTargetPosition = new Vector3(8f, 2.9f, 73.75f);
+        DeckPosition = new Vector3(10f, 3f, 75.5f);
+        DealerTargetPosition = new Vector3(8.5f, 2.6f, 76f);
+        PlayerTargetPosition = new Vector3(8f, 2.6f, 73.75f);
         TargetRotation = Quaternion.Euler(180, 90, 90);
 
         DeckAndMath.PlayerDrawnCards = 0;
@@ -136,7 +136,7 @@ public class DealerCode : MonoBehaviour
     {
         DealerCode.ScoreUpdate = "No";
         GameObject CardToFlip = DealerHand[0];
-        yield return StartCoroutine(MoveAndFlipCard(CardToFlip, new Vector3(8.5f, 2.9f, 76f), Quaternion.Euler(180, 90, 90), 0.70f));
+        yield return StartCoroutine(MoveAndFlipCard(CardToFlip, new Vector3(8.5f, 2.6f, 76f), Quaternion.Euler(180, 90, 90), 0.70f));
         ScoreUpdate = "Yes";
     }
 

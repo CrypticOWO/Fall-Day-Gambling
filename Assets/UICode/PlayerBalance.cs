@@ -20,11 +20,11 @@ public class PlayerBalance : MonoBehaviour
         Balance.text = "Wallet: " + Player.Balance;
         if(CameraCode.LockView == "Yes" && CameraCode.LookingAt == "Table")
         {
-            rectTransform.anchoredPosition = new Vector2(410,430);
+            rectTransform.anchoredPosition = new Vector2(375,415);
         }
         else
         {
-            rectTransform.anchoredPosition = new Vector2(440,500);
+            rectTransform.anchoredPosition = new Vector2(430,490);
         }
     }
 }

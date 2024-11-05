@@ -8,6 +8,9 @@ TagManager:
   - Table
   - Wall
   - Ceiling
+  - ATM
+  - Jukebox
+  - Drinks
   layers:
   - Default
   - TransparentFX

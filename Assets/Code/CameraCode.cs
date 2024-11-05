@@ -61,16 +61,33 @@ public class CameraCode : MonoBehaviour
             LeaveTable.AtTable = "Yes";
             RB.isKinematic = true;
         }
-
-        if (LookingAt != "Table" && TypeOfMenu == "Casino" && InCutscene == "Yes" && LockView == "Yes")
+        if (Input.GetKeyDown(KeyCode.E) && LookingAt == "Jukebox" && InCutscene == "No")
         {
-            StartCoroutine(PanToNewPosition(new Vector3(8, 8, 26), Quaternion.identity, 2f));
+            //Store Old Info for Exit
+            originalPosition = transform.position;
+            originalRotation = transform.rotation;
+            
+            // Locking into the table animation
+            StartCoroutine(PanToNewPosition(new Vector3(25, 6f, 60), Quaternion.Euler(0, 90, 0), 0.6f));
+
+            //Table Code
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            LockView = "Yes";
+            LeaveJukebox.AtJukebox = "Yes";
+            RB.isKinematic = true;
+        }
+        if (LookingAt == "Nothing" && TypeOfMenu == "Casino" && InCutscene == "Yes" && LockView == "Yes")
+        {
+            StartCoroutine(PanToNewPosition(new Vector3(8, 8, 26), Quaternion.identity, 5f));
             LockView = "No";
         }
 
-        if (LeaveTable.AtTable == "No" && LockView == "Yes" && LookingAt == "Table" && InCutscene == "No")
+        if ((LeaveTable.AtTable == "No" || LeaveJukebox.AtJukebox == "No") && LockView == "Yes" && (LookingAt == "Table" || LookingAt == "Jukebox") && InCutscene == "No")
         {
             StartCoroutine(PanToNewPosition(originalPosition, originalRotation, 1f));
+            LeaveTable.AtTable = "Yes";
+            LeaveJukebox.AtJukebox = "Yes";
             LockView = "No";
         }
     }
@@ -147,10 +164,9 @@ public class CameraCode : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 7))
         {
-            if (hit.collider.gameObject.name == "Table")
-            {
-                LookingAt = "Table";
-            }
+            GameObject HitObject = hit.collider.gameObject;
+            string HitTag = HitObject.tag;
+            LookingAt = HitTag;
         }
     }
 }
