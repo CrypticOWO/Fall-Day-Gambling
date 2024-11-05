@@ -116,6 +116,7 @@ public class DealerCode : MonoBehaviour
 
         // Start the movement and flipping coroutine
         yield return StartCoroutine(MoveAndFlipCard(newCard, DealerTargetPosition + new Vector3((DeckAndMath.DealerDrawnCards - 1) * (-0.65f), 0, 0), TargetRotation, 0.35f)); // 1f is the duration for the movement and flip
+        //PlaySoundFXClip(Place, transform, 1f);
         ScoreUpdate = "Yes";
     }
     
@@ -129,6 +130,7 @@ public class DealerCode : MonoBehaviour
 
         // Start the movement and flipping coroutine
         yield return StartCoroutine(MoveAndFlipCard(newCard, PlayerTargetPosition + new Vector3((DeckAndMath.PlayerDrawnCards - 1) * (0.25f), (DeckAndMath.PlayerDrawnCards) * (0.002f), (DeckAndMath.PlayerDrawnCards) * (0.25f)), TargetRotation, 0.35f)); // 1f is the duration for the movement and flip
+        //PlaySoundFXClip(Place, transform, 1f);
         ScoreUpdate = "Yes";
     }
 
@@ -158,6 +160,7 @@ public class DealerCode : MonoBehaviour
 
             yield return null; // Wait for the next frame
         }
+        yield return new WaitForSeconds(0.1f);
     }
 
     private IEnumerator CardDrawingSequence()

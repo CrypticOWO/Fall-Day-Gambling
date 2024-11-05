@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LeaveJukebox : MonoBehaviour
 {
-    public static string AtJukebox = "No";
+    public static string AtJukebox = "Yes";
 
     void Start()
     {

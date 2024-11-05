@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LeaveTable : MonoBehaviour
 {
-    public static string AtTable = "No";
+    public static string AtTable = "Yes";
 
     void Start()
     {

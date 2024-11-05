@@ -58,7 +58,7 @@ public class CameraCode : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             LockView = "Yes";
-            LeaveTable.AtTable = "Yes";
+            //LeaveTable.AtTable = "Yes";
             RB.isKinematic = true;
         }
         if (Input.GetKeyDown(KeyCode.E) && LookingAt == "Jukebox" && InCutscene == "No")
@@ -74,7 +74,7 @@ public class CameraCode : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             LockView = "Yes";
-            LeaveJukebox.AtJukebox = "Yes";
+            //LeaveJukebox.AtJukebox = "Yes";
             RB.isKinematic = true;
         }
         if (LookingAt == "Nothing" && TypeOfMenu == "Casino" && InCutscene == "Yes" && LockView == "Yes")
@@ -89,6 +89,7 @@ public class CameraCode : MonoBehaviour
             LeaveTable.AtTable = "Yes";
             LeaveJukebox.AtJukebox = "Yes";
             LockView = "No";
+            
         }
     }
 
